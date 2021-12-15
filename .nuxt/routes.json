@@ -1,0 +1,20 @@
+[
+  {
+    "name": "auth",
+    "path": "/auth",
+    "component": "C:\\\\Users\\\\alaa\\\\Desktop\\\\nuxt.js-dev\\\\examples\\\\with-sockets\\\\pages\\\\auth.vue",
+    "chunkName": "pages/auth"
+  },
+  {
+    "name": "test",
+    "path": "/test",
+    "component": "C:\\\\Users\\\\alaa\\\\Desktop\\\\nuxt.js-dev\\\\examples\\\\with-sockets\\\\pages\\\\test.vue",
+    "chunkName": "pages/test"
+  },
+  {
+    "name": "index",
+    "path": "/",
+    "component": "C:\\\\Users\\\\alaa\\\\Desktop\\\\nuxt.js-dev\\\\examples\\\\with-sockets\\\\pages\\\\index.vue",
+    "chunkName": "pages/index"
+  }
+]
