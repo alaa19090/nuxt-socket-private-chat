@@ -1,4 +1,4 @@
-# Nuxt with [Socket.io](https://socket.io/)
+# Nuxt with [Socket.io](https://socket.io/)v3
 
 An example for Nuxt with WebSockets over Socket.io.
 
