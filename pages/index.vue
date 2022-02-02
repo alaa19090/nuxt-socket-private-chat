@@ -1,160 +1,98 @@
 <template>
-  <div>
-    <nuxt-link to="/auth">auth</nuxt-link>
-    <nuxt-link to="/test">test</nuxt-link>
-    <!-- <ul class="pages">
-      <li class="chat page">
-        <div class="chatArea">
-          <ul ref="messages" class="messages">
-            <li v-for="(msg, index) in messages" :key="index" class="message">
-              <i :title="msg.date">
-                {{ msg.date.split('T')[1].slice(0, -2) }}
-              </i>: {{ msg.text }}
-            </li>
-          </ul>
-        </div>
-        <input v-model="message" class="inputMessage" type="text" placeholder="Type here..." @keyup.enter="sendMessage">
-      </li>
-    </ul> -->
+  <div id="app">
+    <select-username v-show="!this.$auth.loggedIn" />
+    <chat v-show="this.$auth.loggedIn" />
   </div>
 </template>
 
 <script>
-import socket from '~/plugins/socket.io.js'
+import SelectUsername from "~/components/SelectUsername";
+import Chat from "~/components/Chat";
 
 export default {
-   layout: "chat",
-  // asyncData () {
-  //   return new Promise(resolve =>
-  //     socket.emit('last-messages', messages => resolve({ messages }))
-  //   )
-  // },
-  data () {
-    return { message: '' }
+  name: "App",
+  layout: "chat",
+  components: {
+    Chat,
+    SelectUsername,
   },
-  head: {
-    title: 'Nuxt.js with Socket.io'
-  },
-  // watch: {
-  //   messages: 'scrollToBottom'
-  // },
-  // beforeMount () {
-  //   socket.on('new-message', (message) => {
-  //     this.messages.push(message)
-  //   })
-  // },
-  // mounted () {
-  //   this.scrollToBottom()
-  // },
-  methods: {
-    sendMessage () {
-      if (!this.message.trim()) { return }
-      const message = {
-        date: new Date().toJSON(),
-        text: this.message.trim()
-      }
-      this.messages.push(message)
-      this.message = ''
-      socket.emit('send-message', message)
+  computed: {
+    fff() {
+     let user_on_server =  [
+  {
+    userID: 106135197885743,
+    username: 'asasa sassasa',
+    user_object: {
+      username: 'sklk1285056',
+      user_id: 106135197885743,
+      full_name: 'asasa sassasa',
+      following: [Array]
     },
-    scrollToBottom () {
-      this.$nextTick(() => {
-        this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
-      })
-    }
+    connected: true
+  },
+  {
+    userID: 593223141784574,
+    username: 'Abdulkadir     ',
+    user_object: {
+      username: 'Admin',
+      user_id: 593223141784574,
+      full_name: 'Abdulkadir     ',
+      following: [Array]
+    },
+    connected: true
   }
-}
+]
+ let user_frinds= [
+  83233141784904,
+  104191690135160,
+  104359901875515,
+  108707020350023,
+  109203481539052,
+  109694326385288,
+  110113565040066,
+  111512047423584,
+  120228856548546,
+  126485969517918,
+  130905431651154,
+  146067755247095,
+  153546331902499,
+  161376751866563,
+  163983642730896,
+  169898402993196,
+  172290568387450,
+  180707662096581,
+  185042868961007,
+  185134083228867,
+  185281161344224,
+  185696740803729,
+  565293142152262,
+  593223141784574,
+  745433142252716,
+  783193142162510
+ ]
+      // First one :
+      let one = [1,2,3,4];
+
+      // Second one :
+      let two = [
+        { id: 10 },
+        { id: 1,
+        op:'ssss' },
+        { id: 4 },
+        { id: 76 },
+        { id: 2 },
+        { id: 47 },
+        { id: 3 },
+      ];
+      // let result = one.map((a) => a.id);
+      // let result2 = two.map((a) => a.id);
+      // const final_result = result.every((val) => result2.includes(val));
+
+      const id_filter = new Set(user_frinds);
+      const res = user_on_server.filter(({ userID }) => id_filter.has(userID));
+      return res;
+    },
+  },
+};
 </script>
 
-<style>
-* {
-  box-sizing: border-box;
-}
-
-html {
-  font-weight: 300;
-  -webkit-font-smoothing: antialiased;
-}
-
-html, input {
-  font-family:
-    "HelveticaNeue-Light",
-    "Helvetica Neue Light",
-    "Helvetica Neue",
-    Helvetica,
-    Arial,
-    "Lucida Grande",
-    sans-serif;
-}
-
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-ul {
-  list-style: none;
-  word-wrap: break-word;
-}
-
-/* Pages */
-
-.pages {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-}
-
-.page {
-  height: 100%;
-  position: absolute;
-  width: 100%;
-}
-
-/* Font */
-
-.messages {
-  font-size: 150%;
-}
-
-.inputMessage {
-  font-size: 100%;
-}
-
-.log {
-  color: gray;
-  font-size: 70%;
-  margin: 5px;
-  text-align: center;
-}
-
-/* Messages */
-
-.chatArea {
-  height: 100%;
-  padding-bottom: 60px;
-}
-
-.messages {
-  height: 100%;
-  margin: 0;
-  overflow-y: scroll;
-  padding: 10px 20px 10px 20px;
-}
-
-/* Input */
-
-.inputMessage {
-  border: 10px solid #3B8070;
-  bottom: 0;
-  height: 60px;
-  left: 0;
-  outline: none;
-  padding-left: 10px;
-  position: absolute;
-  right: 0;
-  width: 100%;
-}
-</style>

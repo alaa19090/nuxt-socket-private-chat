@@ -19,17 +19,18 @@
 </template>
 
 <script>
-import socket from '~/plugins/socket.io.js'
 import User from "~/components/User";
 import MessagePanel from "~/components/MessagePanel";
+import socket from "~/plugins/socket.io.js";
 
 export default {
   name: "Chat",
   components: { User, MessagePanel },
- data() {
+  data() {
     return {
       selectedUser: null,
       users: [],
+      hasNewMessages: false,
     };
   },
   methods: {
@@ -49,99 +50,108 @@ export default {
       this.selectedUser = user;
       user.hasNewMessages = false;
     },
+    playSound(url) {
+      const audio = new Audio(url);
+      audio.play();
+    } 
   },
-  beforeMount() {
-    console.log('socket.on("connect');
-    
-    socket.on("connect", () => {
-      console.log('!!!socket.on("connect');
-      this.users.forEach((user) => {
-        console.log(user);
-        if (user.self) {
-          user.connected = true;
-        }
+  created() {
+    if (process.client) {
+      socket.emit("chat page", true);
+      socket.on("connect", () => {
+        // console.log("connect event");
+        this.users.forEach((user) => {
+          if (user.self) {
+            user.connected = true;
+          }
+        });
       });
-    });
 
-    socket.on("disconnect", () => {
-      console.log('!!!disconnect');
-
-      this.users.forEach((user) => {
-        if (user.self) {
-          user.connected = false;
-        }
+      socket.on("disconnect", () => {
+        this.users.forEach((user) => {
+          if (user.self) {
+            user.connected = false;
+          }
+        });
       });
-    });
 
-    const initReactiveProperties = (user) => {
-      user.messages = [];
-      user.hasNewMessages = false;
-    };
+      const initReactiveProperties = (user) => {
+        user.hasNewMessages = false;
+      };
 
-    socket.on("users", (users) => {
-      console.log('!!!users');
+      socket.on("users", (users) => {
+        users.forEach((user) => {
+          user.messages.forEach((message) => {
+            message.fromSelf = message.from === socket.userID;
+          });
+          for (let i = 0; i < this.users.length; i++) {
+            const existingUser = this.users[i];
+            if (existingUser.userID === user.userID) {
+              existingUser.connected = user.connected;
+              existingUser.messages = user.messages;
+              return;
+            }
+          }
+          user.self = user.userID === socket.userID;
+          initReactiveProperties(user);
+          this.users.push(user);
+        });
+        // put the current user first, and sort by username
+        this.users.sort((a, b) => {
+          if (a.self) return -1;
+          if (b.self) return 1;
+          if (a.username < b.username) return -1;
+          return a.username > b.username ? 1 : 0;
+        });
+      });
 
-      users.forEach((user) => {
+      socket.on("user connected", (user) => {
+        const new_users = this.$auth.user.following.find(
+          (x) => x.user_id == user.userID
+        );
+        if (!new_users) return;
         for (let i = 0; i < this.users.length; i++) {
           const existingUser = this.users[i];
           if (existingUser.userID === user.userID) {
-            existingUser.connected = user.connected;
+            existingUser.connected = true;
             return;
           }
         }
-        user.self = user.userID === socket.userID;
+
         initReactiveProperties(user);
         this.users.push(user);
       });
-      // put the current user first, and sort by username
-      this.users.sort((a, b) => {
-        if (a.self) return -1;
-        if (b.self) return 1;
-        if (a.username < b.username) return -1;
-        return a.username > b.username ? 1 : 0;
-      });
-    });
 
-    socket.on("user connected", (user) => {
-      console.log('!!!user connected');
-
-      for (let i = 0; i < this.users.length; i++) {
-        const existingUser = this.users[i];
-        if (existingUser.userID === user.userID) {
-          existingUser.connected = true;
-          return;
-        }
-      }
-      initReactiveProperties(user);
-      this.users.push(user);
-    });
-
-    socket.on("user disconnected", (id) => {
-      for (let i = 0; i < this.users.length; i++) {
-        const user = this.users[i];
-        if (user.userID === id) {
-          user.connected = false;
-          break;
-        }
-      }
-    });
-
-    socket.on("private message", ({ content, from, to }) => {
-      for (let i = 0; i < this.users.length; i++) {
-        const user = this.users[i];
-        const fromSelf = socket.userID === from;
-        if (user.userID === (fromSelf ? to : from)) {
-          user.messages.push({
-            content,
-            fromSelf,
-          });
-          if (user !== this.selectedUser) {
-            user.hasNewMessages = true;
+      socket.on("user disconnected", (id) => {
+        for (let i = 0; i < this.users.length; i++) {
+          const user = this.users[i];
+          if (user.userID === id) {
+            user.connected = false;
+            break;
           }
-          break;
         }
-      }
-    });
+      });
+
+      socket.on("private message", ({ content, from, to }) => {
+        this.playSound('/Notification.mp3');
+        for (let i = 0; i < this.users.length; i++) {
+          const user = this.users[i];
+          const fromSelf = socket.userID === from;
+          if (user.userID === (fromSelf ? to : from)) {
+            user.messages.push({
+              content,
+              fromSelf,
+            });
+            console.log(this.selectedUser);
+            console.log(user);
+            if (user !== this.selectedUser) {
+              user.hasNewMessages = true;
+            }
+            break;
+          }
+        }
+      });
+    }
   },
   destroyed() {
     socket.off("connect");
@@ -157,8 +167,7 @@ export default {
 <style scoped>
 .left-panel {
   position: fixed;
-  left: auto;
-  right: -100px;
+  left: 0;
   top: 0;
   bottom: 0;
   width: 260px;
