@@ -32,7 +32,7 @@ class InMemorySessionStore extends SessionStore {
     const new_user_friends = new Set(user.following);
     const users_on_server =[...this.sessions.values()];
     //find users friends if is online
-    let result = users_on_server.filter(({ userID }) => new_user_friends.has(userID))
+    let result = users_on_server.filter(({ userID }) =>{return  new_user_friends.has(userID)})
     return result;
   }
 }

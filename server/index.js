@@ -1,8 +1,8 @@
 const port = process.env.PORT || 3000;
 const isProd = process.env.NODE_ENV === "production";
 
-const http = require("http");
 const app = require("express")();
+const http = require("http");
 const server = http.createServer(app);
 const io = require("socket.io")(server);
 
@@ -23,49 +23,6 @@ server.listen(port, () =>
   console.log(`server listening at http://localhost:${port}`)
 );
 
-// io.use((socket, next) => {
-//   const username = socket.handshake.auth.username;
-//   const object1 = socket.handshake.auth.object1;
-//   if (!username) {
-//     return next(new Error("invalid username"));
-//   }
-//   socket.username = username;
-//   socket.object1 = object1;
-//   next();
-// });
-
-// io.on("connection", (socket) => {
-//   // fetch existing users
-//   const users = [];
-//   for (let [id, socket] of io.of("/").sockets) {
-//     users.push({
-//       userID: id,
-//       username: socket.username,
-//       object1: socket.object1,
-//     });
-//     console.log(users);
-//   }
-//   socket.emit("users", users);
-
-//   // notify existing users
-//   socket.broadcast.emit("user connected", {
-//     userID: socket.id,
-//     username: socket.username,
-//   });
-
-//   // forward the private message to the right recipient
-//   socket.on("private message", ({ content, to }) => {
-//     socket.to(to).emit("private message", {
-//       content,
-//       from: socket.id,
-//     });
-//   });
-
-//   // notify users upon disconnection
-//   socket.on("disconnect", () => {
-//     socket.broadcast.emit("user disconnected", socket.id);
-//   });
-// });
 
 const crypto = require("crypto");
 const randomId = () => crypto.randomBytes(8).toString("hex");

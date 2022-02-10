@@ -3,9 +3,6 @@ const middleware = {}
 middleware['auth-redirect'] = require('..\\middleware\\auth-redirect.js')
 middleware['auth-redirect'] = middleware['auth-redirect'].default || middleware['auth-redirect']
 
-middleware['google-user'] = require('..\\middleware\\google-user.js')
-middleware['google-user'] = middleware['google-user'].default || middleware['google-user']
-
 middleware['isCurrentUser'] = require('..\\middleware\\isCurrentUser.js')
 middleware['isCurrentUser'] = middleware['isCurrentUser'].default || middleware['isCurrentUser']
 

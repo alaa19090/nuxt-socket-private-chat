@@ -2,19 +2,19 @@
   {
     "name": "auth",
     "path": "/auth",
-    "component": "C:\\\\Users\\\\alaa\\\\Desktop\\\\nuxt.js-dev\\\\examples\\\\with-sockets\\\\pages\\\\auth.vue",
+    "component": "C:\\\\Users\\\\alaa\\\\Desktop\\\\nuxt-socket-private-chat\\\\pages\\\\auth.vue",
     "chunkName": "pages/auth"
   },
   {
     "name": "test",
     "path": "/test",
-    "component": "C:\\\\Users\\\\alaa\\\\Desktop\\\\nuxt.js-dev\\\\examples\\\\with-sockets\\\\pages\\\\test.vue",
+    "component": "C:\\\\Users\\\\alaa\\\\Desktop\\\\nuxt-socket-private-chat\\\\pages\\\\test.vue",
     "chunkName": "pages/test"
   },
   {
     "name": "index",
     "path": "/",
-    "component": "C:\\\\Users\\\\alaa\\\\Desktop\\\\nuxt.js-dev\\\\examples\\\\with-sockets\\\\pages\\\\index.vue",
+    "component": "C:\\\\Users\\\\alaa\\\\Desktop\\\\nuxt-socket-private-chat\\\\pages\\\\index.vue",
     "chunkName": "pages/index"
   }
 ]
